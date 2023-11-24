@@ -134,7 +134,7 @@ const UpdateCard = ({
     const tx = {
       type: 'ACCOUNT_UPDATE',
       from: user.address,
-      gas: 300000,
+      gas: 3000000,
       key: toUpdate,
     }
 

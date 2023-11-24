@@ -1,6 +1,6 @@
-import { ReactElement, useEffect } from 'react'
+import { ReactElement } from 'react'
 import styled, { useTheme } from 'styled-components'
-import { Outlet, useLocation, useNavigation } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 
 import { STYLE } from 'consts'
 
@@ -75,6 +75,7 @@ const MainScreen = (): ReactElement => {
             routes={Routes.Home_AccountUpdateFeePayer}
             title="Set fee payer"
           />
+          <MenuItem routes={Routes.Home_TestFeePayer} title="Test fee payer" />
         </StyledMenu>
         <StyledContents>
           <Outlet />

@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useState } from 'react'
+import { ReactElement, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { IconX } from '@tabler/icons-react'
 
@@ -22,6 +22,7 @@ const StyledInput = styled.input`
   width: 100%;
   margin: 0;
   background-color: transparent;
+  padding: 10px;
 
   color: ${STYLE.getTheme('gray', '_700')};
   border: none;
@@ -43,11 +44,8 @@ const StyledClearBtn = styled(Pressable)``
 const StyledNewClearBtn = styled(Pressable)``
 
 const FormInput = ({
-  number,
   inputProps,
   onChangeValue,
-  suffix,
-  clickableSuffix,
   isError,
   helperText,
   clearButton,
@@ -55,16 +53,14 @@ const FormInput = ({
   onEnterKeyPress,
   onNewClearButtonClick,
 }: {
-  number?: boolean
   inputProps?: {
     placeholder?: string
     value?: string
     readOnly?: boolean
     autoFocus?: boolean
+    type?: 'text' | 'password' | 'number'
   }
   onChangeValue?: (value: string) => void
-  suffix?: ReactNode
-  clickableSuffix?: ReactNode
   isError?: boolean
   helperText?: string
   clearButton?: boolean
@@ -88,7 +84,6 @@ const FormInput = ({
       <StyledWrapper>
         <StyledInput
           {...inputProps}
-          type={number ? 'number' : 'text'}
           onChange={({ target: { value } }): void => {
             onChangeValue?.(value)
           }}
