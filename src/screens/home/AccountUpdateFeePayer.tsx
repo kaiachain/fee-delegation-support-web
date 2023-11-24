@@ -181,7 +181,7 @@ const UpdateCard = ({
       </Card>
       <Card>
         <FormText fontType="B.20" color={theme.gray._400}>
-          Input to set fee payer public key
+          Input public key to set as fee payer
         </FormText>
         <StyledTextarea
           rows={3}
