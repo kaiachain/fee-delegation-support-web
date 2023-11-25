@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components'
 import Caver from 'caver-js'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-import { Card, FormButton, FormText, Pressable, Row, View } from 'components'
+import { Card, FormButton, FormText, Row, View } from 'components'
 import { useAppNavigation, useAuth, useToast } from 'hooks'
 import { Routes } from 'types'
 
