@@ -28,7 +28,7 @@ const StyledInput = styled.input`
   border: none;
 
   ::placeholder {
-    color: ${STYLE.getTheme('gray', '_50')};
+    color: ${STYLE.getTheme('gray', '_400')};
   }
   :focus {
     outline: none;

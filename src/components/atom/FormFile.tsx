@@ -1,7 +1,11 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 
-const StyledFile = styled.input``
+import { STYLE } from 'consts'
+
+const StyledFile = styled.input`
+  color: ${STYLE.getTheme('gray', '_400')};
+`
 
 type FormFileProps = {
   accept: string

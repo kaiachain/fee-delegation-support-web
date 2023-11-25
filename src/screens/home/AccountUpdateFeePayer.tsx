@@ -6,9 +6,17 @@ import { useQuery } from '@tanstack/react-query'
 // @ts-ignore
 import { ec } from 'elliptic'
 
-import { STYLE } from 'consts'
-import { Card, FormButton, FormText, View, CodeBlock, Row } from 'components'
-import { useAppNavigation, useAuth, useLoading } from 'hooks'
+import { STYLE, UTIL } from 'consts'
+import {
+  Card,
+  FormButton,
+  FormText,
+  View,
+  CodeBlock,
+  Row,
+  ErrMsg,
+} from 'components'
+import { useAppNavigation, useAuth, useLoading, useUserBalance } from 'hooks'
 import { ContractAddr, QueryKeyEnum, Routes, User } from 'types'
 import { accountHelper } from 'libs'
 
@@ -97,8 +105,24 @@ const UpdateCard = ({
 
   const theme = useTheme()
   const { showLoading, hideLoading } = useLoading()
+  const { klayBalance } = useUserBalance()
 
   const caver = new Caver(user.proxy as any)
+
+  const balanceMsg = useMemo(() => {
+    const dKLAY = UTIL.toBn(UTIL.demicrofy(klayBalance))
+    if (false === dKLAY.gt(0)) {
+      return 'Insufficient KLAY balance'
+    } else if (dKLAY.lte(0.05)) {
+      return `Your KLAY balance is too low. you have ${UTIL.formatAmount(
+        klayBalance,
+      )} KLAY`
+    }
+    return ''
+  }, [klayBalance])
+
+  const isValidForm =
+    !balanceMsg && accountHelper.isValidPublicKey(feePayerPubKey)
 
   const { data: updaterAccountKey = {}, refetch } = useQuery(
     [QueryKeyEnum.KLAY_ACCOUNT_KEY, updaterPubKey],
@@ -109,17 +133,19 @@ const UpdateCard = ({
   )
 
   const updaterAccountKeyType = useMemo(() => {
-    switch (updaterAccountKey.keyType) {
-      case 5:
-        return 'AccountKeyRoleBased'
-      case 4:
-        return 'AccountKeyWeightedMultiSig'
-      case 3:
-        return 'AccountKeyFail'
-      case 2:
-        return 'AccountKeyPublic'
-      case 1:
-        return 'AccountKeyLegacy'
+    if (updaterAccountKey) {
+      switch (updaterAccountKey.keyType) {
+        case 5:
+          return 'AccountKeyRoleBased'
+        case 4:
+          return 'AccountKeyWeightedMultiSig'
+        case 3:
+          return 'AccountKeyFail'
+        case 2:
+          return 'AccountKeyPublic'
+        case 1:
+          return 'AccountKeyLegacy'
+      }
     }
   }, [updaterAccountKey])
 
@@ -137,7 +163,7 @@ const UpdateCard = ({
     const tx: any = {
       type: 'ACCOUNT_UPDATE',
       from: user.address,
-      gas: 3000000,
+      gas: 300000,
       key: toUpdate,
     }
 
@@ -158,29 +184,35 @@ const UpdateCard = ({
         <FormText fontType="B.20" color={theme.gray._400}>
           Account Key
         </FormText>
-        <StyledKeyBox>
-          <FormText fontType="B.14" color={theme.gray._500}>
-            Key type
-          </FormText>
-          <FormText fontType="B.18">{updaterAccountKeyType} </FormText>
-          {Array.isArray(updaterAccountKey.key) && (
-            <View style={{ rowGap: 4 }}>
-              <FormText fontType="B.14" color={theme.gray._500}></FormText>
-              <KeyParser
-                title="Transaction key"
-                accKey={updaterAccountKey.key[0].key}
-              />
-              <KeyParser
-                title="Update key"
-                accKey={updaterAccountKey.key[1].key}
-              />
-              <KeyParser
-                title="Fee Payer key"
-                accKey={updaterAccountKey.key[2].key}
-              />
-            </View>
-          )}
-        </StyledKeyBox>
+        {updaterAccountKey ? (
+          <StyledKeyBox>
+            <FormText fontType="B.14" color={theme.gray._500}>
+              Key type
+            </FormText>
+            <FormText fontType="B.18">{updaterAccountKeyType} </FormText>
+            {Array.isArray(updaterAccountKey.key) && (
+              <View style={{ rowGap: 4 }}>
+                <FormText fontType="B.14" color={theme.gray._500}></FormText>
+                <KeyParser
+                  title="Transaction key"
+                  accKey={updaterAccountKey.key[0].key}
+                />
+                <KeyParser
+                  title="Update key"
+                  accKey={updaterAccountKey.key[1].key}
+                />
+                <KeyParser
+                  title="Fee Payer key"
+                  accKey={updaterAccountKey.key[2].key}
+                />
+              </View>
+            )}
+          </StyledKeyBox>
+        ) : (
+          <StyledKeyBox>
+            <FormText fontType="B.18">Not onchain key</FormText>
+          </StyledKeyBox>
+        )}
       </Card>
       <Card>
         <FormText fontType="B.20" color={theme.gray._400}>
@@ -200,12 +232,10 @@ const UpdateCard = ({
           </FormText>
         )}
       </Card>
-      <FormButton
-        disabled={false === accountHelper.isValidPublicKey(feePayerPubKey)}
-        onClick={update}
-      >
+      <FormButton disabled={!isValidForm} onClick={update}>
         Update
       </FormButton>
+      <ErrMsg text={balanceMsg} />
     </>
   )
 }

@@ -15,6 +15,7 @@ import {
   CodeBlock,
   LinkExplorer,
   Row,
+  Hr,
 } from 'components'
 import { useLoading, useNetwork } from 'hooks'
 import { ChainNetworkEnum, ContractAddr, Token } from 'types'
@@ -49,7 +50,7 @@ const RunWithFeePayer = ({
       from: senderKeyring.address,
       to: senderKeyring.address,
       value: UTIL.microfy('1' as Token),
-      gas: 3000000,
+      gas: 300000,
       feePayer: feePayerKeyring.address,
     })
     await caver.wallet.signAsFeePayer(feePayerKeyring.address, tx)
@@ -64,14 +65,14 @@ const RunWithFeePayer = ({
   return (
     <>
       <Card>
-        <FormText>{`Send 1 KLAY to my self`}</FormText>
-        <Row style={{ columnGap: 4 }}>
-          <FormText>Sender : </FormText>
-          <LinkExplorer type="account" address={senderKeyring.address} />
-        </Row>
+        <FormText fontType="B.20">Send 1 KLAY to sender itself</FormText>
         <Row style={{ columnGap: 4 }}>
           <FormText>Fee payer : </FormText>
           <LinkExplorer type="account" address={feePayerKeyring.address} />
+        </Row>
+        <Row style={{ columnGap: 4 }}>
+          <FormText>Sender : </FormText>
+          <LinkExplorer type="account" address={senderKeyring.address} />
         </Row>
         <FormButton onClick={onClickConfirm}>Confirm</FormButton>
       </Card>
@@ -122,17 +123,22 @@ const TestFeePayer = (): ReactElement => {
             setFeePayerAddress(value as ContractAddr)
           }}
         />
+        <Hr />
         <FormText fontType="B.20">
           Fee payer keystore (single keyring only for now)
         </FormText>
-        <FormGetKey keyring={keyring} setKeyring={setKeyring} />
-        {keyring && <FormText>Keyring type : {keyring.type}</FormText>}
-
+        <View>
+          <FormGetKey keyring={keyring} setKeyring={setKeyring} />
+          {keyring && <FormText>Keyring type : {keyring.type}</FormText>}
+        </View>
+        <Hr />
         <FormText fontType="B.20">Sender keystore</FormText>
-        <FormGetKey keyring={senderKeyring} setKeyring={setSenderKeyring} />
-        {senderKeyring && (
-          <FormText>Keyring type : {senderKeyring.type}</FormText>
-        )}
+        <View>
+          <FormGetKey keyring={senderKeyring} setKeyring={setSenderKeyring} />
+          {senderKeyring && (
+            <FormText>Keyring type : {senderKeyring.type}</FormText>
+          )}
+        </View>
       </Card>
       {feePayerKeyring && senderKeyring && (
         <RunWithFeePayer
