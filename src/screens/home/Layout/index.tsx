@@ -43,7 +43,13 @@ const StyledMenuItem = styled(Pressable)`
   padding: 10px;
 `
 
-const MenuItem = ({ routes, title }: { routes: Routes; title: string }) => {
+const MenuItem = ({
+  routes,
+  title,
+}: {
+  routes: Routes
+  title: string
+}): ReactElement => {
   const { navigate } = useAppNavigation()
   const location = useLocation()
   const theme = useTheme()

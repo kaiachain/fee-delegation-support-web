@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes, ReactElement } from 'react'
-import styled, { css, RuleSet } from 'styled-components'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 
 import { STYLE } from 'consts'
 
@@ -12,7 +12,11 @@ export type ButtonFigureType =
   | 'red'
   | 'gray'
 
-const getStyleBySize = ({ size }: { size?: ButtonSizeType }): RuleSet => {
+const getStyleBySize = ({
+  size,
+}: {
+  size?: ButtonSizeType
+}): FlattenSimpleInterpolation => {
   switch (size) {
     case 'xs':
       return css`
@@ -54,7 +58,7 @@ const StyledButtonBase = styled.button<ButtonProps>`
 
   width: ${({ btnWidth }): string => btnWidth ?? 'auto'};
 
-  ${({ size }): RuleSet => getStyleBySize({ size })};
+  ${({ size }): FlattenSimpleInterpolation => getStyleBySize({ size })};
 
   :disabled {
     cursor: not-allowed;

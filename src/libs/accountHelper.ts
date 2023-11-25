@@ -13,4 +13,5 @@ const publicKeyToAddress = (publicKey: string): ContractAddr | undefined => {
 
 export default {
   publicKeyToAddress,
+  isValidPublicKey: utils.isValidPublicKey,
 }

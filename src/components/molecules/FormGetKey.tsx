@@ -40,7 +40,9 @@ const FormGetKey = ({
 
   const onClickDecryptKeystore = (): void => {
     try {
-      keystoreJSON && setKeyring(keyringDecrypt(keystoreJSON, keystorePassword))
+      if (keystoreJSON) {
+        setKeyring(keyringDecrypt(keystoreJSON, keystorePassword))
+      }
     } catch (error) {
       setKeyringErrMsg(_.toString(error))
     }

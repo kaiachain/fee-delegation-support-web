@@ -21,5 +21,6 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'error',
     'no-unexpected-multiline': 'off',
     '@typescript-eslint/no-namespace': 'off',
+    '@typescript-eslint/ban-ts-comment': 'warn',
   },
 }

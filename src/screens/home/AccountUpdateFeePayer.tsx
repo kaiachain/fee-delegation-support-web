@@ -6,10 +6,10 @@ import { useQuery } from '@tanstack/react-query'
 // @ts-ignore
 import { ec } from 'elliptic'
 
-import { Card, FormButton, FormText, View, CodeBlock, Row } from 'components'
-import { useAppNavigation, useAuth } from 'hooks'
-import { ContractAddr, QueryKeyEnum, Routes, User } from 'types'
 import { STYLE } from 'consts'
+import { Card, FormButton, FormText, View, CodeBlock, Row } from 'components'
+import { useAppNavigation, useAuth, useLoading } from 'hooks'
+import { ContractAddr, QueryKeyEnum, Routes, User } from 'types'
 import { accountHelper } from 'libs'
 
 const secp256k1 = new ec('secp256k1')
@@ -50,6 +50,7 @@ const KeyParser = ({
 }): ReactElement => {
   const { user } = useAuth()
   const theme = useTheme()
+
   const obj = useMemo(() => {
     if (accKey && 'x' in accKey && 'y' in accKey) {
       const publicKey = makePublicKey(accKey.x, accKey.y)
@@ -95,6 +96,7 @@ const UpdateCard = ({
   const [feePayerPubKey, setFeePayerPubKey] = useState('')
 
   const theme = useTheme()
+  const { showLoading, hideLoading } = useLoading()
 
   const caver = new Caver(user.proxy as any)
 
@@ -122,6 +124,7 @@ const UpdateCard = ({
   }, [updaterAccountKey])
 
   const update = async (): Promise<void> => {
+    showLoading()
     const toUpdate = caver.klay.accounts.createAccountForUpdateWithPublicKey(
       user.address,
       {
@@ -131,17 +134,17 @@ const UpdateCard = ({
       },
     )
 
-    const tx = {
+    const tx: any = {
       type: 'ACCOUNT_UPDATE',
       from: user.address,
       gas: 3000000,
       key: toUpdate,
     }
 
-    // @ts-ignore
     caver.klay.sendTransaction(tx)
 
     refetch()
+    hideLoading()
   }
 
   return (
@@ -197,7 +200,12 @@ const UpdateCard = ({
           </FormText>
         )}
       </Card>
-      <FormButton onClick={update}>Update</FormButton>
+      <FormButton
+        disabled={false === accountHelper.isValidPublicKey(feePayerPubKey)}
+        onClick={update}
+      >
+        Update
+      </FormButton>
     </>
   )
 }

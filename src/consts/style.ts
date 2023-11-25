@@ -1,5 +1,9 @@
 import { CSSProperties } from 'react'
-import { DefaultTheme, RuleSet, css } from 'styled-components'
+import {
+  DefaultTheme,
+  FlattenSimpleInterpolation,
+  css,
+} from 'styled-components'
 import { FontType } from 'types'
 
 const DESKTOP_WIDE = 1920
@@ -16,7 +20,7 @@ const media = {
   tablet: `(max-width: ${TABLET}px)`,
 }
 
-const setMediaWidth = (): RuleSet<object> => css`
+const setMediaWidth = (): FlattenSimpleInterpolation => css`
   margin: 0 auto;
   width: ${DESKTOP}px;
   @media ${media.tablet} {
@@ -44,7 +48,7 @@ const getTheme =
   ({ theme }: { theme: DefaultTheme }): DefaultTheme[T1][T2] =>
     theme[val1][val2]
 
-const ellipsisRow = (row: number): RuleSet<object> => css`
+const ellipsisRow = (row: number): FlattenSimpleInterpolation => css`
   min-width: auto;
   overflow: hidden;
   text-overflow: ellipsis;
