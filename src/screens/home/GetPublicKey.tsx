@@ -1,9 +1,10 @@
 import { ReactElement, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 import Caver from 'caver-js'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-import { Card, FormButton, FormText, View } from 'components'
-import { useAppNavigation, useAuth } from 'hooks'
+import { Card, FormButton, FormText, Pressable, Row, View } from 'components'
+import { useAppNavigation, useAuth, useToast } from 'hooks'
 import { Routes } from 'types'
 
 const utils = Caver.utils
@@ -18,6 +19,7 @@ const GetPublicKey = (): ReactElement => {
   const theme = useTheme()
   const [addrFromPubKey, setAddrFromPubKey] = useState('')
 
+  const { toast } = useToast()
   const { navigate } = useAppNavigation()
 
   const onClickConfirm = async (): Promise<void> => {
@@ -46,10 +48,28 @@ const GetPublicKey = (): ReactElement => {
       </Card>
       {publicKey && (
         <Card>
-          <FormText fontType="B.20" color={theme.gray._400}>
-            public key
-          </FormText>
+          <Row style={{ columnGap: 4 }}>
+            <FormText fontType="B.20" color={theme.gray._400}>
+              public key
+            </FormText>
+            <CopyToClipboard
+              text={publicKey}
+              onCopy={(): void => {
+                toast('Copied')
+              }}
+            >
+              <FormButton
+                figure="outline"
+                size="xs"
+                style={{ width: 'fit-content' }}
+              >
+                {' '}
+                copy
+              </FormButton>
+            </CopyToClipboard>
+          </Row>
           <FormText>{publicKey}</FormText>
+
           <FormText fontType="B.20" color={theme.gray._400}>
             address of public key
           </FormText>

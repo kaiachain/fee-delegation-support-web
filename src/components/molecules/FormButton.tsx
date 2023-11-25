@@ -22,7 +22,7 @@ const getStyleBySize = ({
       return css`
         font-size: 12px;
         line-height: 16px;
-        padding: 6px 14px;
+        padding: 6px 10px;
       `
     case 'sm':
       return css`
