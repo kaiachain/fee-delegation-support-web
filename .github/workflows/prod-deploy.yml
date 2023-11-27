@@ -1,9 +1,8 @@
 name: klaytn-support-kit prod deploy workflow
 on:
   push:
-    branchs:
-      #- v[0-9]+.[0-9]+.[0-9]+
-      - init-cicd
+    tag:
+      - v[0-9]+.[0-9]+.[0-9]+
 
 jobs:
   deploy:
