@@ -35,7 +35,7 @@ const TestFeePayer = (): ReactElement => {
       from: senderAddress,
       to: senderAddress,
       value: UTIL.microfy('1' as Token),
-      gas: 3000000,
+      gas: 300000,
       feePayer: feePayerAddress,
     })
     await caver.wallet.signAsFeePayer(feePayerAddress, tx)
