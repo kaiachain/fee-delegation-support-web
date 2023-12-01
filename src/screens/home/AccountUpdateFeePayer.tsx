@@ -251,12 +251,15 @@ const AccountUpdateFeePayer = (): ReactElement => {
         <UpdateCard updaterPubKey={updaterPubKey} user={user} />
       ) : (
         <Card>
+          <FormText fontType="B.20">
+            Able to update your account after getting your public key
+          </FormText>
           <FormButton
             onClick={(): void => {
               navigate(Routes.Home)
             }}
           >
-            Get wallet public key
+            Go to get public key
           </FormButton>
         </Card>
       )}

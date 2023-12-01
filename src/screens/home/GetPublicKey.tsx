@@ -44,7 +44,11 @@ const GetPublicKey = (): ReactElement => {
     <StyledContainer>
       <Card>
         <FormText fontType="B.20">Get public key</FormText>
-        <FormButton onClick={onClickConfirm}>Ask to Wallet</FormButton>
+        {user ? (
+          <FormButton onClick={onClickConfirm}>Ask to Wallet</FormButton>
+        ) : (
+          <FormText>Connect to wallet first</FormText>
+        )}
       </Card>
       {publicKey && (
         <Card>
