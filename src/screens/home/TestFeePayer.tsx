@@ -46,20 +46,26 @@ const RunWithFeePayer = ({
 
   const onClickConfirm = async (): Promise<void> => {
     showLoading()
-    const tx = caver.transaction.feeDelegatedValueTransfer.create({
-      from: senderKeyring.address,
-      to: senderKeyring.address,
-      value: UTIL.microfy('1' as Token),
-      gas: 300000,
-      feePayer: feePayerKeyring.address,
-    })
-    await caver.wallet.signAsFeePayer(feePayerKeyring.address, tx)
 
-    await caver.wallet.sign(senderKeyring.address, tx)
+    try {
+      const tx = caver.transaction.feeDelegatedValueTransfer.create({
+        from: senderKeyring.address,
+        to: senderKeyring.address,
+        value: UTIL.microfy('1' as Token),
+        gas: 300000,
+        feePayer: feePayerKeyring.address,
+      })
+      await caver.wallet.signAsFeePayer(feePayerKeyring.address, tx)
 
-    const receipt = await caver.rpc.klay.sendRawTransaction(tx)
-    setTxReceipt(receipt)
-    hideLoading()
+      await caver.wallet.sign(senderKeyring.address, tx)
+
+      const receipt = await caver.rpc.klay.sendRawTransaction(tx)
+      setTxReceipt(receipt)
+    } catch (error) {
+      window.alert(error)
+    } finally {
+      hideLoading()
+    }
   }
 
   return (
@@ -114,25 +120,43 @@ const TestFeePayer = (): ReactElement => {
     <StyledContainer>
       <Card>
         <FormText fontType="B.20">
-          Fee payer address{' '}
-          <b style={{ color: 'red' }}>(it's not the keystore's address)</b>
+          KLAY fee owning address
+          <br />
+          <small>
+            <b style={{ color: 'gray' }}>
+              (The address that owns the KLAY for paying the fee)
+            </b>
+          </small>
         </FormText>
         <FormInput
-          inputProps={{ value: feePayerAddress }}
+          inputProps={{ value: feePayerAddress, placeholder: '0x...' }}
           onChangeValue={(value): void => {
             setFeePayerAddress(value as ContractAddr)
           }}
         />
         <Hr />
         <FormText fontType="B.20">
-          Fee payer keystore (single keyring only for now)
+          Keystore with the Fee Payer Role
+          <br />
+          <small>
+            <b style={{ color: 'red' }}>(single keyring only for now)</b>
+          </small>
         </FormText>
         <View>
           <FormGetKey keyring={keyring} setKeyring={setKeyring} />
           {keyring && <FormText>Keyring type : {keyring.type}</FormText>}
         </View>
         <Hr />
-        <FormText fontType="B.20">Sender keystore</FormText>
+        <FormText fontType="B.20">
+          Tx Sender keystore
+          <br />
+          <small>
+            <b style={{ color: 'gray' }}>
+              (The keystore of the account attempting to execute a transaction
+              without KLAY fees)
+            </b>
+          </small>
+        </FormText>
         <View>
           <FormGetKey keyring={senderKeyring} setKeyring={setSenderKeyring} />
           {senderKeyring && (
